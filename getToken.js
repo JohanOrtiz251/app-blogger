@@ -1,28 +1,21 @@
+import fs from 'fs';
 import { google } from 'googleapis';
 import readline from 'readline';
-import dotenv from 'dotenv';
 
-// Cargar variables de entorno
-dotenv.config();
-
-// Validar que las variables de entorno existen
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI } = process.env;
-
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !REDIRECT_URI) {
-  throw new Error('❌ ERROR: Faltan variables de entorno en .env');
-}
+// Cargar credenciales desde credentials.json
+const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
 
 const oauth2Client = new google.auth.OAuth2(
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  REDIRECT_URI
+  credentials.installed.client_id,
+  credentials.installed.client_secret,
+  'http://localhost:3000/' // Asegúrate de que coincida con el redirect_uri en Google Cloud
 );
 
 // Generar URL de autenticación
 const authUrl = oauth2Client.generateAuthUrl({
   access_type: 'offline',
   scope: ['https://www.googleapis.com/auth/blogger'],
-  response_type: 'code',
+  response_type: 'code', // IMPORTANTE
 });
 
 console.log('🔗 Visita esta URL para autorizar:', authUrl);
@@ -36,7 +29,8 @@ rl.question('Introduce el código de autorización: ', async code => {
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
-    console.log('✅ Token obtenido:', tokens);
+    fs.writeFileSync('token1.json', JSON.stringify(tokens));
+    console.log('✅ Token guardado en token.json');
   } catch (error) {
     console.error('❌ Error al obtener el token:', error);
   } finally {

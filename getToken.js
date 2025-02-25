@@ -1,24 +1,20 @@
-import fs from 'fs';
 import { google } from 'googleapis';
 import readline from 'readline';
 import dotenv from 'dotenv';
 
-// Cargar variables de entorno desde .env
+// Cargar variables de entorno
 dotenv.config();
 
-// Cargar credenciales desde credentials.json
-const credentials = JSON.parse(fs.readFileSync('credenciales11.json', 'utf-8'));
+// Validar que las variables de entorno existen
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI } = process.env;
 
-const REDIRECT_URI = process.env.REDIRECT_URI;
-if (!REDIRECT_URI) {
-  throw new Error(
-    '❌ ERROR: REDIRECT_URI no está definido en las variables de entorno'
-  );
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !REDIRECT_URI) {
+  throw new Error('❌ ERROR: Faltan variables de entorno en .env');
 }
 
 const oauth2Client = new google.auth.OAuth2(
-  credentials.installed.client_id,
-  credentials.installed.client_secret,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
   REDIRECT_URI
 );
 
@@ -26,7 +22,7 @@ const oauth2Client = new google.auth.OAuth2(
 const authUrl = oauth2Client.generateAuthUrl({
   access_type: 'offline',
   scope: ['https://www.googleapis.com/auth/blogger'],
-  response_type: 'code', // IMPORTANTE
+  response_type: 'code',
 });
 
 console.log('🔗 Visita esta URL para autorizar:', authUrl);
@@ -40,8 +36,7 @@ rl.question('Introduce el código de autorización: ', async code => {
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
-    fs.writeFileSync('token1.json', JSON.stringify(tokens));
-    console.log('✅ Token guardado en token1.json');
+    console.log('✅ Token obtenido:', tokens);
   } catch (error) {
     console.error('❌ Error al obtener el token:', error);
   } finally {

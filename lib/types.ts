@@ -1,12 +1,3 @@
-export interface Feed {
-  id: string;
-  url: string;
-  lastFetched: string;
-  title?: string;
-  keywords?: string[];
-  category?: string;
-}
-
 export interface Article {
   id: string;
   title: string;
@@ -14,7 +5,7 @@ export interface Article {
   source: string;
   feedId: string;
   imageUrl?: string;
-  status: 'pendiente' | 'procesando' | 'listo' | 'publicado';
+  status: 'pendiente' | 'procesando' | 'listo' | 'publicando' | 'publicado'; // Agregamos "publicando"
   originalContent?: string;
   publishedUrl?: string;
   publishedDate?: string;

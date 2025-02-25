@@ -1,3 +1,12 @@
+export interface Feed {
+  id: string;
+  url: string;
+  lastFetched: string;
+  title?: string;
+  keywords?: string[];
+  category?: string;
+}
+
 export interface Article {
   id: string;
   title: string;

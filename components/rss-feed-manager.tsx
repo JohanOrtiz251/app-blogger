@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Plus, Trash2, RefreshCw } from "lucide-react"
-import { useStore, type Feed } from "@/lib/store"
+import { useStore } from "@/lib/store"
+import type { Feed } from "@/lib/types" // Asegúrate de importar el tipo desde el archivo correcto
+
 
 export function RssFeedManager() {
   const { feeds, addFeed: addFeedToStore, removeFeed: removeFeedFromStore, updateFeedLastFetched } = useStore()

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Feed, Article, FeedFilters } from './types';
+export type { Feed } from "./types"; // Asegúrate de que esto está presente
 
 
 interface AppState {
